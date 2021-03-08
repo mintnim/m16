@@ -1,3 +1,4 @@
+
 #include<iostream>
 #include<string>
 #include<ctime>
@@ -47,10 +48,12 @@ Unit::Unit(string t,string n){
 		hpmax = rand()%20+120;
 		atk = rand()%5+14;
 		def = rand()%3+9;
+		dodge_on = false;
 	}else if(t == "Monster"){
 		hpmax = rand()%20+250;
 		atk = rand()%5+25;
 		def = rand()%3+5;
+		dodge_on = false;
 	}
 	hp = hpmax;	
 	guard_on = false;
@@ -74,6 +77,7 @@ void Unit::showStatus(){
 
 void Unit::newTurn(){
 	guard_on = false; 
+	dodge_on = false;
 }
 
 int Unit::beAttacked(int oppatk){
@@ -81,11 +85,20 @@ int Unit::beAttacked(int oppatk){
 	if(oppatk > def){
 		dmg = oppatk-def;	
 		if(guard_on) dmg = dmg/3;
+		if(dodge_on){
+		    if(rand()%2 == 1){
+		        dmg = 0;
+		    }
+		    else{
+		        dmg = dmg * 2;
+		    }
 	}	
 	hp -= dmg;
 	if(hp <= 0){hp = 0;}
 	
-	return dmg;	
+	
+}
+    return dmg;	
 }
 
 int Unit::attack(Unit &opp){
@@ -101,11 +114,19 @@ int Unit::heal(){
 
 void Unit::guard(){
 	guard_on = true;
-}	
+}
+
+void Unit::dodge(){
+    dodge_on = true;
+}
 
 bool Unit::isDead(){
 	if(hp <= 0) return true;
 	else return false;
+}
+
+int Unit::ultimateAttack(Unit &opp){
+    return opp.beAttacked(atk*2);
 }
 
 void drawScene(char p_action,int p,char m_action,int m){
@@ -167,4 +188,5 @@ void playerLose(){
 	cout << "*                                                     *\n";
 	cout << "*******************************************************\n";
 };
+
 
